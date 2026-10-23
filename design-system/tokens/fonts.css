@@ -1,0 +1,14 @@
+/* Voyita webfonts. The .fig references Outfit, Sora, Inter and Satoshi.
+   Outfit / Sora / Inter are served here from Google Fonts (the source file ships no
+   binaries). Satoshi is a Fontshare release with no Google Fonts equivalent and no
+   binary in the source; it appears in only 6 nodes with no clear role, so no token
+   points at it and nothing in this system renders in it. If Satoshi matters, drop the
+   .woff2 files into assets/fonts/, add @font-face rules here, and reintroduce a
+   --font-satoshi token. Do not substitute a lookalike. */
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Sora:wght@100..800&family=Inter:wght@100..900&display=swap");
+
+:root {
+  --font-outfit: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sora: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-inter: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}

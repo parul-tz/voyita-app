@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="design-system/tokens/fonts.css">
+<link rel="stylesheet" href="design-system/tokens/fig-tokens.css">
+<link rel="stylesheet" href="design-system/tokens/semantic.css">
+<link rel="stylesheet" href="design-system/tokens/fig-typography.css">
+<link rel="stylesheet" href="design-system/styles.css">
+<script src="design-system/ds-bundle.js"></script>
+<script src="screens/00-core.js"></script>
+  <script src="screens/01-trips.js"></script>
+  <script src="screens/02-trip-details.js"></script>
+  <script src="screens/03-view-details-and-basic-details.js"></script>
+  <script src="screens/04-itinerary.js"></script>
+  <script src="screens/05-payment-setup.js"></script>
+  <script src="screens/06-add-ons.js"></script>
+  <script src="screens/07-staff.js"></script>
+  <script src="screens/08-cost-sheet.js"></script>
+  <script src="screens/09-documents.js"></script>
+  <script src="screens/10-settings.js"></script>
+  <script src="screens/11-travellers.js"></script>
+  <script src="screens/12-room-and-coach-list.js"></script>
+  <script src="screens/13-manage-vendor.js"></script>
+  <script src="screens/14-notifications.js"></script>
+  <script src="screens/15-trip-packet.js"></script>
+  <script src="screens/16-account.js"></script>
+  <script src="screens/17-draft-trips.js"></script>
+<style>
+body{margin:0;background:#E9EBF0;}
+a{color:#4942E4;text-decoration:none;}
+a:hover{color:#3232C3;}
+.vm-x::-webkit-scrollbar{display:none;}
+.vm-x{scrollbar-width:none;}
+</style>
+</helmet>
+<div style="padding:{{ pagePad }};display:flex;flex-direction:column;gap:140px;font-family:Sora, sans-serif;color:#191B25;width:{{ pageW }};box-sizing:border-box;">
+
+  <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:-60px;">
+      <span style="font-family:Outfit, sans-serif;font-weight:600;font-size:24px;line-height:32px;">Voyita mobile · Trip module · {{ total }} screens</span>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;max-width:1600px;">
+        <sc-for list="{{ groupTabs }}" as="gt" hint-placeholder-count="11">
+          <button onClick="{{ gt.onClick }}" style="height:40px;padding:0 16px;border-radius:8px;border:1px solid #191B25;background:{{ gt.bg }};color:{{ gt.color }};font-family:Sora, sans-serif;font-size:14px;cursor:pointer;white-space:nowrap;">{{ gt.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ showScope }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Scope" style="width:1240px;background:#FFFFFF;border:1px solid #E0E4EA;border-radius:12px;padding:48px;box-sizing:border-box;display:flex;flex-direction:column;gap:28px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <span style="font-size:12px;line-height:20px;font-weight:600;color:#4942E4;text-transform:uppercase;">Voyita mobile</span>
+        <span style="font-family:Outfit, sans-serif;font-weight:600;font-size:32px;line-height:50px;">Trip module: view and manage a trip on the go</span>
+        <span style="font-size:14px;line-height:24px;color:#717784;">Built from the Tenant Admin Mobile App screens, extended with edit and manage actions. {{ total }} screens across the tabs above — every frame is clickable.</span>
+      </div>
+      <div style="display:flex;gap:24px;align-items:flex-start;">
+        <div style="flex:1.4;min-width:0;border:1px solid #E0E4EA;border-radius:12px;padding:20px 24px;display:flex;flex-direction:column;">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 140px;gap:12px;padding-bottom:12px;">
+            <span style="font-weight:600;font-size:16px;line-height:24px;">Trip module</span>
+            <span style="font-size:12px;line-height:20px;color:#717784;text-transform:uppercase;">View on mobile</span>
+            <span style="font-size:12px;line-height:20px;color:#717784;text-transform:uppercase;">Edit on mobile</span>
+          </div>
+          <sc-for list="{{ scopeRows }}" as="r" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 140px;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #E0E4EA;">
+              <div style="display:flex;flex-direction:column;"><span style="font-size:14px;line-height:24px;font-weight:600;">{{ r.a }}</span><span style="font-size:12px;line-height:20px;color:#717784;">{{ r.b }}</span></div>
+              <div><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ r.xt }}" hint-size="48px,20px">{{ r.x }}</x-import></div>
+              <div><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ r.yt }}" hint-size="48px,20px">{{ r.y }}</x-import></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:24px;">
+          <sc-for list="{{ scopeBoxes }}" as="bx" hint-placeholder-count="3">
+            <div style="border:1px solid #E0E4EA;border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:4px;">
+              <span style="font-weight:600;font-size:16px;line-height:24px;padding-bottom:4px;">{{ bx.title }}</span>
+              <sc-for list="{{ bx.items }}" as="t" hint-placeholder-count="3">
+                <div style="display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:14px;line-height:20px;">
+                  <span style="color:#717784;flex-shrink:0;padding-top:2px;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ bx.icon }}" size="16" hint-size="16px,16px"></x-import></span><span>{{ t }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+    <section style="display:flex;flex-direction:column;gap:40px;">
+      <sc-if value="{{ g.showHead }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:baseline;gap:20px;border-bottom:2px solid #191B25;padding-bottom:14px;max-width:3105px;">
+          <span style="font-family:Outfit, sans-serif;font-weight:600;font-size:40px;line-height:52px;">{{ g.title }}</span>
+          <span style="font-size:18px;line-height:28px;color:#717784;">{{ g.sub }}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ g.hasFlows }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:3105px;background:#FFFFFF;border:1px solid #E0E4EA;border-radius:12px;padding:24px 28px;display:flex;flex-direction:column;gap:24px;box-sizing:border-box;">
+          <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+            <span style="font-family:Outfit, sans-serif;font-weight:600;font-size:24px;line-height:36px;flex:1;">User flow</span>
+            <sc-for list="{{ flowLegend }}" as="lg" hint-placeholder-count="4">
+              <span style="display:flex;align-items:center;gap:8px;font-size:14px;line-height:24px;color:#191B25;"><span style="width:28px;height:18px;box-sizing:border-box;border-radius:{{ lg.rad }};background:{{ lg.bg }};border:{{ lg.bd }};"></span>{{ lg.t }}</span>
+            </sc-for>
+          </div>
+          <sc-for list="{{ g.flows }}" as="fl" hint-placeholder-count="2">
+            <div style="display:flex;gap:24px;align-items:flex-start;padding-top:20px;border-top:1px solid #E0E4EA;">
+              <span style="width:220px;flex-shrink:0;font-family:Outfit, sans-serif;font-weight:600;font-size:16px;line-height:24px;padding-top:22px;">{{ fl.label }}</span>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;row-gap:16px;">
+                  <sc-for list="{{ fl.steps }}" as="st" hint-placeholder-count="4">
+                    <div style="display:flex;align-items:center;">
+                      <sc-if value="{{ st.notFirst }}" hint-placeholder-val="{{ false }}">
+                        <div style="min-width:88px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 4px;">
+                          <span style="font-size:12px;line-height:16px;color:#717784;text-align:center;min-height:16px;white-space:nowrap;">{{ st.via }}</span>
+                          <div style="display:flex;align-items:center;width:100%;"><div style="flex:1;height:2px;background:#99A0AE;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid #99A0AE;"></div></div>
+                          <span style="min-height:16px;"></span>
+                        </div>
+                      </sc-if>
+                      <div style="width:168px;min-height:64px;box-sizing:border-box;padding:10px 12px;border-radius:{{ st.rad }};background:{{ st.bg }};border:{{ st.bd }};display:flex;flex-direction:column;justify-content:center;gap:2px;">
+                        <div style="display:flex;gap:6px;font-size:12px;line-height:16px;font-weight:600;"><span style="color:#4942E4;">{{ st.n }}</span><span style="color:{{ st.kc }};">{{ st.kind }}</span></div>
+                        <span style="font-size:14px;line-height:20px;font-weight:500;color:#191B25;text-wrap:pretty;">{{ st.t }}</span>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ fl.hasAlt }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;line-height:24px;color:#717784;">
+                    <span style="font-weight:600;color:#191B25;">Also</span>
+                    <sc-for list="{{ fl.alt }}" as="a" hint-placeholder-count="2">
+                      <span style="display:flex;align-items:center;gap:8px;"><sc-if value="{{ a.hasSep }}" hint-placeholder-val="{{ false }}"><span style="color:#99A0AE;">{{ a.sep }}</span></sc-if><span style="display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:8px;border:{{ a.bd }};background:{{ a.bg }};color:#191B25;"><span style="color:#4942E4;font-weight:600;font-size:12px;">{{ a.n }}</span>{{ a.t }}<sc-if value="{{ a.hasVia }}" hint-placeholder-val="{{ false }}"><span style="color:#717784;font-size:12px;">· {{ a.via }}</span></sc-if></span></span>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="display:flex;flex-wrap:wrap;gap:120px 80px;max-width:3105px;align-items:flex-start;">
+        <sc-for list="{{ g.frames }}" as="fr" hint-placeholder-count="4">
+          <div id="{{ fr.anchor }}" style="display:flex;flex-direction:column;gap:16px;width:375px;">
+            <sc-if value="{{ fr.showLabel }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:8px;min-height:28px;">
+                <span style="height:24px;padding:0 8px;border-radius:6px;background:#191B25;color:#FFFFFF;font-size:12px;display:flex;align-items:center;flex-shrink:0;">{{ fr.num }}</span>
+                <span style="font-weight:600;font-size:16px;line-height:24px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ fr.label }}</span>
+                <sc-if value="{{ fr.moved }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:12px;line-height:20px;color:#717784;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;">→ {{ fr.curLabel }}</span>
+                  <button onClick="{{ fr.onReset }}" style="margin-left:auto;flex-shrink:0;height:28px;padding:0 10px;border-radius:6px;border:1px solid #E0E4EA;background:#FFFFFF;font-family:Outfit, sans-serif;font-size:14px;color:#4942E4;cursor:pointer;">Reset</button>
+                </sc-if>
+              </div>
+            </sc-if>
+
+            <div data-screen-label="{{ fr.label }}" style="position:relative;width:375px;min-height:812px;height:{{ fr.h }};overflow:{{ fr.ovf }};background:{{ fr.bg }};display:flex;flex-direction:column;border-radius:{{ fr.rad }};box-shadow:{{ fr.shadow }};">
+              <div style="height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:{{ fr.topBg }};font-size:15px;font-weight:600;">
+                <span>9:41</span><span style="width:24px;height:11px;border:1.5px solid #191B25;border-radius:3px;box-sizing:border-box;"></span>
+              </div>
+
+              <sc-if value="{{ fr.hasBar }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;align-items:center;gap:8px;height:60px;flex-shrink:0;box-sizing:border-box;padding:0 12px 0 16px;background:#FFFFFF;border-bottom:1px solid #E0E4EA;">
+                  <sc-if value="{{ fr.hasBack }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ fr.onBack }}" aria-label="Back" style="width:44px;height:44px;margin-left:-12px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#191B25;padding:0;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Chevron2StateLeft" size="22" hint-size="22px,22px"></x-import></button>
+                  </sc-if>
+                  <span style="flex:1;min-width:0;font-size:20px;font-weight:600;line-height:32px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ fr.title }}</span>
+                  <sc-if value="{{ fr.rLink }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Button" type="tertiary" size="sm" leadingIcon="{{ fr.rIcon }}" onClick="{{ fr.onRight }}" dc-props="{{ brandInk }}" hint-size="80px,32px">{{ fr.rLabel }}</x-import>
+                  </sc-if>
+                  <sc-if value="{{ fr.rIconOnly }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ fr.onRight }}" aria-label="More" style="width:36px;height:36px;margin-right:0;border-radius:6px;border:none;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E0E4EA;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#191B25;padding:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ fr.rIcon }}" size="20" hint-size="20px,20px"></x-import></button>
+                  </sc-if>
+                  <sc-if value="{{ fr.rBtn }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Button" type="secondary" size="sm" onClick="{{ fr.onRight }}" hint-size="100px,32px">{{ fr.rLabel }}</x-import>
+                  </sc-if>
+                  <sc-if value="{{ fr.rChip }}" hint-placeholder-val="{{ false }}">
+                    <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ fr.rTone }}" hint-size="56px,20px">{{ fr.rLabel }}</x-import>
+                  </sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ fr.hasMain }}" hint-placeholder-val="{{ false }}">
+                <div style="height:64px;flex-shrink:0;display:flex;align-items:center;padding:0 16px;background:#FFFFFF;border-bottom:1px solid #E0E4EA;"><span style="font-weight:600;font-size:20px;line-height:32px;">{{ fr.title }}</span></div>
+              </sc-if>
+
+              <sc-if value="{{ fr.hasTabs }}" hint-placeholder-val="{{ false }}">
+                <div class="vm-x" data-tabsrow="1" style="display:flex;background:#FFFFFF;border-bottom:1px solid #E0E4EA;overflow-x:auto;flex-shrink:0;padding:0 8px;">
+                  <sc-for list="{{ fr.tabs }}" as="tb" hint-placeholder-count="3">
+                    <button onClick="{{ tb.onClick }}" data-tabon="{{ tb.on }}" style="flex-shrink:0;height:48px;padding:0 12px;border:none;border-bottom:2px solid {{ tb.bd }};background:none;display:flex;align-items:center;gap:8px;color:{{ tb.color }};font-family:Sora, sans-serif;font-size:14px;cursor:pointer;white-space:nowrap;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ tb.icon }}" size="18" hint-size="18px,18px"></x-import>{{ tb.label }}</button>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <div class="vm-x" style="flex:1;min-height:0;overflow-y:{{ fr.colOv }};display:flex;flex-direction:column;gap:16px;padding:{{ fr.colPad }};box-sizing:border-box;">
+                <sc-for list="{{ fr.cs }}" as="c" hint-placeholder-count="3">
+                  <div onClick="{{ c.onClick }}" style="position:{{ c.pos }};left:{{ c.l }};right:{{ c.r }};top:{{ c.t }};bottom:{{ c.b }};transform:{{ c.tf }};z-index:{{ c.z }};background:{{ c.bg }};border:{{ c.bd }};border-radius:{{ c.rad }};padding:{{ c.pad }};max-height:{{ c.mh }};overflow-y:{{ c.ov }};cursor:{{ c.cur }};box-shadow:{{ c.sh }};box-sizing:border-box;display:flex;flex-wrap:wrap;align-content:flex-start;gap:{{ c.gap }};flex-shrink:0;">
+                    <sc-for list="{{ c.items }}" as="it" hint-placeholder-count="2">
+                      <div style="width:{{ it.w }};min-width:0;">
+
+                        <sc-if value="{{ it.isField }}" hint-placeholder-val="{{ false }}">
+                          <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.InputField" label="{{ it.label }}" required="{{ it.req }}" size="lg" state="{{ it.state }}" value="{{ it.val }}" placeholder="{{ it.ph }}" onChange="{{ it.onChange }}" onClick="{{ it.onClick }}" readOnly="{{ it.ro }}" type="{{ it.inType }}" leadingIcon="{{ it.lead }}" trailingIcon="{{ it.trail }}" helpText="{{ it.help }}" hint-size="100%,72px"></x-import>
+                        </sc-if>
+                        <sc-if value="{{ it.isArea }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:4px;">
+                            <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.FieldLabel" required="{{ it.req }}" hint-size="80px,20px">{{ it.label }}</x-import>
+                            <textarea value="{{ it.val }}" onChange="{{ it.onChange }}" placeholder="{{ it.ph }}" rows="3" style="border:1px solid {{ it.areaBd }};border-radius:8px;padding:12px;font-family:Sora, sans-serif;font-size:14px;line-height:20px;color:#191B25;resize:none;outline-color:#4942E4;background:#FFFFFF;box-sizing:border-box;width:100%;"></textarea>
+                            <sc-if value="{{ it.hasHelp }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:20px;color:{{ it.helpColor }};">{{ it.help }}</span></sc-if>
+                          </div>
+                        </sc-if>
+
+                        <sc-if value="{{ it.isToggle }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ it.onTap }}" style="display:flex;align-items:center;gap:12px;min-height:44px;cursor:pointer;">
+                            <div style="flex:1;display:flex;flex-direction:column;"><span style="font-size:14px;line-height:20px;font-weight:500;">{{ it.label }}</span><sc-if value="{{ it.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:20px;color:#717784;">{{ it.sub }}</span></sc-if></div>
+                            <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Switch" checked="{{ it.on }}" onChange="{{ noop }}" hint-size="20px,20px"></x-import>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isLRow }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;align-items:center;gap:4px;">
+                            <div style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 12px;border:1px solid #E0E4EA;border-radius:8px;background:#FFFFFF;display:flex;align-items:center;font-size:14px;color:{{ it.lColor }};"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ it.lText }}</span></div>
+                            <sc-if value="{{ it.noAdd }}" hint-placeholder-val="{{ false }}"><span style="width:40px;flex-shrink:0;"></span></sc-if><sc-if value="{{ it.hasAdd }}" hint-placeholder-val="{{ false }}"><button onClick="{{ it.onAdd }}" aria-label="Add" style="width:40px;height:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#191B25;padding:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Add" size="20" hint-size="20px,20px"></x-import></button></sc-if>
+                            <sc-if value="{{ it.hasDel }}" hint-placeholder-val="{{ false }}"><button onClick="{{ it.onDel }}" aria-label="Delete" style="width:40px;height:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#CA054D;padding:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Delete" size="20" hint-size="20px,20px"></x-import></button></sc-if>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isTable }}" hint-placeholder-val="{{ false }}">
+                          <div class="vm-x" style="overflow-x:auto;margin:0 -16px;">
+                            <div style="display:flex;flex-direction:column;min-width:{{ it.minW }};">
+                              <div style="display:grid;grid-template-columns:{{ it.cols }};padding:0 10px;background:#F3F5F8;border-top:1px solid #E0E4EA;border-bottom:1px solid #E0E4EA;">
+                                <sc-for list="{{ it.head }}" as="hc" hint-placeholder-count="4"><span style="padding:10px 6px;font-size:11px;line-height:16px;font-weight:600;color:#717784;text-transform:uppercase;letter-spacing:0.02em;">{{ hc }}</span></sc-for>
+                              </div>
+                              <sc-for list="{{ it.rows }}" as="tr" hint-placeholder-count="4">
+                                <div style="display:grid;grid-template-columns:{{ it.cols }};padding:0 10px;border-bottom:{{ tr.bd }};">
+                                  <sc-for list="{{ tr.cells }}" as="tc" hint-placeholder-count="4"><span style="padding:12px 6px;font-size:12px;line-height:18px;color:#191B25;">{{ tc }}</span></sc-for>
+                                </div>
+                              </sc-for>
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isPick }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ it.onTap }}" role="checkbox" aria-checked="{{ it.on }}" style="display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:12px;border:1px solid {{ it.bd }};background:#FFFFFF;cursor:pointer;">
+                            <div style="display:flex;align-items:center;gap:12px;">
+                              <span style="width:36px;height:36px;border-radius:100px;background:#E5EAFF;color:#525866;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{ it.ini }}</span>
+                              <span style="flex:1;min-width:0;font-size:14px;line-height:20px;font-weight:500;">{{ it.name }}</span>
+                              <span style="width:24px;height:24px;border-radius:100px;box-sizing:border-box;border:{{ it.cBd }};background:{{ it.cBg }};color:{{ it.cColor }};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="CheckFilledNo" size="12" hint-size="12px,12px"></x-import></span>
+                            </div>
+                            <div style="height:1px;background:#E0E4EA;"></div>
+                            <div style="display:flex;flex-direction:column;gap:4px;font-size:12px;line-height:20px;">
+                              <span style="display:flex;gap:8px;align-items:center;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Email2" size="16" hint-size="16px,16px"></x-import>{{ it.email }}</span>
+                              <span style="display:flex;gap:8px;align-items:center;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Contact" size="16" hint-size="16px,16px"></x-import>{{ it.phone }}</span>
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isCheck }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ it.onTap }}" style="display:flex;align-items:flex-start;gap:12px;min-height:44px;cursor:pointer;padding:2px 0;">
+                            <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Checkbox" label="" checked="{{ it.on }}" onChange="{{ noop }}" hint-size="20px,20px"></x-import>
+                            <div style="flex:1;display:flex;flex-direction:column;"><span style="font-size:14px;line-height:20px;">{{ it.label }}</span><sc-if value="{{ it.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:20px;color:#717784;">{{ it.sub }}</span></sc-if></div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isRadio }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ it.onTap }}" style="display:flex;align-items:flex-start;gap:12px;min-height:44px;cursor:pointer;padding:10px 12px;border-radius:8px;border:1px solid {{ it.rBd }};background:{{ it.rBg }};box-sizing:border-box;">
+                            <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.RadioButton" label="" boxed="{{ false }}" checked="{{ it.on }}" onChange="{{ noop }}" hint-size="20px,20px"></x-import>
+                            <div style="flex:1;display:flex;flex-direction:column;"><span style="font-size:14px;line-height:20px;font-weight:500;">{{ it.label }}</span><sc-if value="{{ it.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:20px;color:#717784;">{{ it.sub }}</span></sc-if></div>
+                          </div>
+                        </sc-if>
+
+                        <sc-if value="{{ it.isHead }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ it.onClick }}" style="display:flex;align-items:{{ it.align }};gap:12px;min-height:{{ it.minH }};cursor:{{ it.cur }};">
+                            <sc-if value="{{ it.hasAv }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0;display:flex;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Avatar" name="{{ it.avName }}" size="{{ it.avSize }}" hint-size="36px,36px"></x-import></span></sc-if>
+                            <sc-if value="{{ it.hasTile }}" hint-placeholder-val="{{ false }}"><span style="width:36px;height:36px;border-radius:8px;background:#EFF2FF;color:#4942E4;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.tileIcon }}" size="18" hint-size="18px,18px"></x-import></span></sc-if>
+                            <sc-if value="{{ it.hasImg }}" hint-placeholder-val="{{ false }}"><div role="img" style="width:{{ it.imgW }};height:{{ it.imgH }};border-radius:{{ it.imgRad }};background:url({{ it.imgSrc }}) center / {{ it.imgFit }} no-repeat;flex-shrink:0;"></div></sc-if>
+                            <sc-if value="{{ it.hasLIcon }}" hint-placeholder-val="{{ false }}"><span style="color:{{ it.lColor }};display:flex;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.lIcon }}" size="20" hint-size="20px,20px"></x-import></span></sc-if>
+                            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+                              <sc-if value="{{ it.hasKicker }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:16px;color:#717784;">{{ it.kicker }}</span></sc-if>
+                              <sc-if value="{{ it.hasTitle }}" hint-placeholder-val="{{ true }}"><span style="font-size:{{ it.tSize }};line-height:{{ it.tLh }};font-weight:{{ it.tW }};overflow-wrap:anywhere;">{{ it.title }}<sc-if value="{{ it.hasSuffix }}" hint-placeholder-val="{{ false }}"><span style="font-weight:400;font-size:12px;color:#717784;"> {{ it.suffix }}</span></sc-if></span></sc-if>
+                              <sc-if value="{{ it.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:16px;color:#717784;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ it.sub }}</span></sc-if>
+                              <sc-if value="{{ it.hasBody }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:18px;color:#191B25;text-wrap:pretty;">{{ it.body }}</span></sc-if>
+                              <sc-if value="{{ it.hasTag }}" hint-placeholder-val="{{ false }}"><span style="padding-top:6px;display:flex;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ it.tagTone }}" hint-size="80px,20px">{{ it.tagText }}</x-import></span></sc-if>
+                            </div>
+                            <sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="0">
+                              <span style="flex-shrink:0;display:flex;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ ch.tone }}" hint-size="56px,20px">{{ ch.t }}</x-import></span>
+                            </sc-for>
+                            <sc-if value="{{ it.hasRT }}" hint-placeholder-val="{{ false }}"><span style="font-weight:600;font-size:14px;line-height:20px;flex-shrink:0;">{{ it.rightText }}</span></sc-if>
+                            <sc-if value="{{ it.hasRL }}" hint-placeholder-val="{{ false }}">
+                              <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Button" type="tertiary" size="sm" leadingIcon="{{ it.rlIcon }}" onClick="{{ it.onRL }}" dc-props="{{ brandInk }}" hint-size="64px,32px">{{ it.rightLink }}</x-import>
+                            </sc-if>
+                            <sc-for list="{{ it.icons }}" as="ib" hint-placeholder-count="0">
+                              <button onClick="{{ ib.onClick }}" aria-label="{{ ib.name }}" style="width:44px;height:44px;margin:-6px -2px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:{{ ib.color }};padding:0;flex-shrink:0;"><span style="width:32px;height:32px;border-radius:6px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E0E4EA;display:flex;align-items:center;justify-content:center;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ ib.name }}" size="18" hint-size="18px,18px"></x-import></span></button>
+                            </sc-for>
+                            <sc-if value="{{ it.chev }}" hint-placeholder-val="{{ false }}"><span style="color:#717784;display:flex;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Chevron2StateRight" size="18" hint-size="18px,18px"></x-import></span></sc-if>
+                          </div>
+                        </sc-if>
+
+                        <sc-if value="{{ it.isMeta }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:8px;">
+                            <sc-for list="{{ it.rows }}" as="m" hint-placeholder-count="3">
+                              <div style="display:flex;gap:8px;align-items:center;font-size:{{ it.mSize }};line-height:{{ it.mLh }};color:{{ it.mColor }};"><span style="color:#717784;display:flex;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ m.icon }}" size="16" hint-size="16px,16px"></x-import></span><span>{{ m.text }}</span></div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isDiv }}" hint-placeholder-val="{{ false }}"><div style="height:1px;background:#E0E4EA;"></div></sc-if>
+                        <sc-if value="{{ it.isText }}" hint-placeholder-val="{{ false }}">
+                          <span style="display:block;font-size:{{ it.tSize }};line-height:{{ it.tLh }};font-weight:{{ it.tW }};color:{{ it.tColor }};text-transform:{{ it.tCase }};text-align:{{ it.tAlign }};text-wrap:pretty;">{{ it.text }}<sc-if value="{{ it.req }}" hint-placeholder-val="{{ false }}"><span style="color:#CA054D;"> *</span></sc-if></span>
+                        </sc-if>
+                        <sc-if value="{{ it.isStats }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:grid;grid-template-columns:{{ it.cols }};gap:12px;">
+                            <sc-for list="{{ it.cells }}" as="s" hint-placeholder-count="2">
+                              <div style="display:flex;flex-direction:column;min-width:0;"><span style="font-size:12px;line-height:20px;color:#717784;">{{ s.l }}</span><span style="font-size:16px;line-height:24px;font-weight:600;">{{ s.v }}</span></div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isBar }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:6px;">
+                            <sc-if value="{{ it.hasLabel }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;font-size:14px;line-height:20px;"><span>{{ it.label }}</span><span style="color:{{ it.rColor }};">{{ it.right }}</span></div></sc-if>
+                            <div style="height:8px;border-radius:100px;background:#F3F5F8;overflow:hidden;"><div style="height:100%;width:{{ it.pct }};background:#4942E4;border-radius:100px;"></div></div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isBtns }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;gap:8px;">
+                            <sc-for list="{{ it.btns }}" as="b" hint-placeholder-count="1">
+                              <div style="flex:1;min-width:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Button" type="{{ b.type }}" size="lg" fullWidth="{{ true }}" leadingIcon="{{ b.icon }}" onClick="{{ b.onClick }}" dc-props="{{ b.dcp }}" hint-size="100%,48px">{{ b.label }}</x-import></div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isLink }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;margin-left:-12px;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Button" type="tertiary" size="sm" leadingIcon="{{ it.lIcon }}" trailingIcon="{{ it.tIcon }}" onClick="{{ it.onClick }}" dc-props="{{ brandInk }}" hint-size="140px,32px">{{ it.label }}</x-import></div>
+                        </sc-if>
+                        <sc-if value="{{ it.isChips }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-wrap:wrap;gap:6px;padding-left:{{ it.indent }};">
+                            <sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="2"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ ch.tone }}" hint-size="56px,20px">{{ ch.t }}</x-import></sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isNote }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;gap:8px;align-items:flex-start;background:{{ it.nBg }};border-radius:12px;padding:12px 16px;font-size:12px;line-height:18px;color:#191B25;">
+                            <span style="color:{{ it.nColor }};display:flex;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.nIcon }}" size="16" hint-size="16px,16px"></x-import></span><span style="text-wrap:pretty;">{{ it.text }}</span>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isSeg }}" hint-placeholder-val="{{ false }}">
+                          <div class="vm-x" style="display:flex;gap:8px;overflow-x:auto;">
+                            <sc-for list="{{ it.items }}" as="sg" hint-placeholder-count="4">
+                              <button onClick="{{ sg.onClick }}" style="flex-shrink:0;height:44px;padding:0 16px;border-radius:8px;border:1px solid {{ sg.bd }};background:{{ sg.bg }};color:{{ sg.color }};font-family:Sora, sans-serif;font-size:14px;cursor:pointer;white-space:nowrap;">{{ sg.label }}</button>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isSearch }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;gap:8px;align-items:center;">
+                            <div style="flex:1;min-width:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.SearchField" size="lg" placeholder="{{ it.ph }}" value="{{ it.val }}" onChange="{{ it.onChange }}" onClear="{{ it.onClear }}" hint-size="100%,48px"></x-import></div>
+                            <sc-if value="{{ it.hasFilter }}" hint-placeholder-val="{{ false }}">
+                              <button onClick="{{ it.onFilter }}" aria-label="Filters" style="width:48px;height:48px;border-radius:6px;border:1px solid #E0E4EA;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#191B25;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Filter" size="20" hint-size="20px,20px"></x-import></button>
+                            </sc-if>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isEmpty }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px;gap:6px;">
+                            <span style="width:72px;height:72px;border-radius:100px;background:#EFF2FF;color:#4942E4;display:flex;align-items:center;justify-content:center;margin-bottom:10px;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.icon }}" size="32" hint-size="32px,32px"></x-import></span>
+                            <span style="font-weight:600;font-size:16px;line-height:24px;">{{ it.title }}</span>
+                            <span style="font-size:14px;line-height:20px;color:#717784;max-width:260px;">{{ it.text }}</span>
+                            <sc-if value="{{ it.hasBtn }}" hint-placeholder-val="{{ false }}">
+                              <div style="padding-top:14px;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Button" type="primary" size="lg" leadingIcon="Add" onClick="{{ it.onClick }}" hint-size="200px,48px">{{ it.btn }}</x-import></div>
+                            </sc-if>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isKv }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:2px;padding-bottom:10px;border-bottom:{{ it.bd }};">
+                            <span style="font-size:12px;line-height:16px;color:#717784;">{{ it.label }}</span>
+                            <sc-if value="{{ it.hasValue }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;line-height:20px;text-wrap:pretty;">{{ it.value }}</span></sc-if>
+                            <sc-if value="{{ it.hasChips }}" hint-placeholder-val="{{ false }}">
+                              <div style="display:flex;flex-wrap:wrap;gap:6px;padding-top:4px;"><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="1"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ ch.tone }}" hint-size="56px,20px">{{ ch.t }}</x-import></sc-for></div>
+                            </sc-if>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isUpload }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ it.onClick }}" style="display:flex;align-items:center;gap:12px;border:1px dashed #99A0AE;border-radius:8px;padding:16px;background:#FFFFFF;cursor:pointer;">
+                            <span style="color:#4942E4;display:flex;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.icon }}" size="22" hint-size="22px,22px"></x-import></span>
+                            <div style="flex:1;display:flex;flex-direction:column;"><span style="font-weight:500;font-size:14px;line-height:20px;">{{ it.title }}</span><span style="font-size:12px;line-height:16px;color:#717784;">{{ it.sub }}</span></div>
+                            <span style="color:#4942E4;display:flex;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Upload" size="18" hint-size="18px,18px"></x-import></span>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isSplit }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;justify-content:space-between;font-size:12px;line-height:16px;color:#717784;"><span>{{ it.left }}</span><span style="font-weight:600;color:#191B25;">{{ it.right }}</span></div>
+                        </sc-if>
+                        <sc-if value="{{ it.isBox }}" hint-placeholder-val="{{ false }}">
+                          <div style="border:1px solid #E0E4EA;border-radius:8px;padding:12px;display:flex;flex-direction:column;"><span style="font-weight:600;font-size:14px;line-height:20px;">{{ it.title }}</span><span style="font-size:12px;line-height:18px;color:#717784;">{{ it.sub }}</span></div>
+                        </sc-if>
+                        <sc-if value="{{ it.isTiles }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:grid;grid-template-columns:{{ it.cols }};gap:8px;">
+                            <sc-for list="{{ it.tiles }}" as="tl" hint-placeholder-count="3">
+                              <button onClick="{{ tl.onClick }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px;border-radius:12px;border:1px solid {{ tl.bd }};background:{{ tl.bg }};color:{{ tl.color }};font-family:Sora, sans-serif;font-size:12px;font-weight:500;cursor:pointer;">
+                                <sc-if value="{{ tl.isSvg }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block;"><path d="{{ tl.d }}"></path></svg></sc-if><sc-if value="{{ tl.isDs }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ tl.icon }}" size="22" hint-size="22px,22px"></x-import></sc-if>{{ tl.label }}
+                              </button>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isTripsub }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;align-items:center;gap:8px;font-size:12px;line-height:16px;color:#717784;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Trips2" size="14" hint-size="14px,14px"></x-import><span>{{ it.text }}</span></div>
+                        </sc-if>
+                        <sc-if value="{{ it.isBrand }}" hint-placeholder-val="{{ false }}">
+                          <div style="padding:28px 0 4px;display:flex;"><img src="assets/app-lockup.png" alt="Voyita" width="147" height="45" style="width:147px;height:45px;display:block;"></div>
+                        </sc-if>
+                        <sc-if value="{{ it.isH1 }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-family:Outfit, sans-serif;font-weight:600;font-size:28px;line-height:36px;">{{ it.title }}</span><span style="font-size:14px;line-height:22px;color:#717784;text-wrap:pretty;">{{ it.sub }}</span></div>
+                        </sc-if>
+                        <sc-if value="{{ it.isLinks }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;align-items:center;gap:4px;justify-content:{{ it.justify }};font-size:14px;line-height:20px;color:#717784;">
+                            <sc-if value="{{ it.hasPre }}" hint-placeholder-val="{{ false }}"><span>{{ it.pre }}</span></sc-if>
+                            <sc-for list="{{ it.links }}" as="ln" hint-placeholder-count="2">
+                              <button onClick="{{ ln.onClick }}" style="border:none;background:none;padding:0 4px;min-height:44px;font-family:Outfit, sans-serif;font-size:14px;font-weight:500;color:#4942E4;cursor:pointer;">{{ ln.label }}</button>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isOtp }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;gap:8px;">
+                            <sc-for list="{{ it.cells }}" as="oc" hint-placeholder-count="6">
+                              <div style="flex:1;height:52px;border-radius:8px;box-shadow:inset 0 0 0 1px {{ oc.bd }};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;background:#FFFFFF;">{{ oc.v }}</div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isBig }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;justify-content:center;padding:12px 0;"><span style="width:96px;height:96px;border-radius:100px;background:{{ it.bBg }};color:{{ it.bColor }};display:flex;align-items:center;justify-content:center;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.icon }}" size="44" hint-size="44px,44px"></x-import></span></div>
+                        </sc-if>
+                        <sc-if value="{{ it.isSkel }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:8px;"><div style="height:12px;width:60%;border-radius:6px;background:#F3F5F8;"></div><div style="height:12px;border-radius:6px;background:#F3F5F8;"></div></div>
+                        </sc-if>
+                        <sc-if value="{{ it.isCal }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:4px;">
+                            <sc-if value="{{ it.hasFilters }}" hint-placeholder-val="{{ false }}">
+                              <div style="display:flex;gap:8px;padding-bottom:4px;overflow-x:auto;">
+                                <sc-for list="{{ it.filters }}" as="fb" hint-placeholder-count="3"><button onClick="{{ fb.onClick }}" style="flex-shrink:0;height:44px;padding:0;border:none;background:none;display:flex;align-items:center;cursor:pointer;"><span style="height:32px;padding:0 16px;border-radius:100px;border:1px solid {{ fb.bd }};background:{{ fb.bg }};color:{{ fb.color }};font-family:Sora, sans-serif;font-size:12px;display:flex;align-items:center;box-sizing:border-box;">{{ fb.t }}</span></button></sc-for>
+                              </div>
+                            </sc-if>
+                            <div style="display:flex;align-items:center;height:44px;">
+                              <span style="flex:1;display:flex;align-items:center;gap:8px;font-family:Sora, sans-serif;font-size:16px;line-height:24px;color:#191B25;">{{ it.month }}<x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Chevron2StateUp" size="14" hint-size="14px,14px"></x-import></span>
+                              <span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#191B25;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Chevron2StateLeft" size="16" hint-size="16px,16px"></x-import></span>
+                              <span style="width:44px;height:44px;margin-right:-12px;display:flex;align-items:center;justify-content:center;color:#191B25;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Chevron2StateRight" size="16" hint-size="16px,16px"></x-import></span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));">
+                              <sc-for list="{{ it.wd }}" as="w" hint-placeholder-count="7"><span style="text-align:center;font-size:12px;line-height:36px;color:#717784;">{{ w }}</span></sc-for>
+                              <sc-for list="{{ it.days }}" as="d" hint-placeholder-count="30">
+                                <button onClick="{{ d.onClick }}" style="height:48px;min-width:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;">
+                                  <span style="width:46px;max-width:100%;height:44px;box-sizing:border-box;border-radius:8px;border:1px solid {{ d.bd }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">
+                                    <span style="font-family:Sora, sans-serif;font-size:14px;line-height:18px;color:{{ d.color }};">{{ d.label }}</span>
+                                    <span style="display:flex;gap:3px;height:5px;"><sc-for list="{{ d.dots }}" as="dt" hint-placeholder-count="1"><span style="width:5px;height:5px;border-radius:100px;background:{{ dt.c }};"></span></sc-for></span>
+                                  </span>
+                                </button>
+                              </sc-for>
+                            </div>
+                            <div style="display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px 16px;padding:12px 0;border-bottom:1px dashed #99A0AE;">
+                              <sc-for list="{{ it.legend }}" as="lg" hint-placeholder-count="4"><span style="display:flex;align-items:center;gap:6px;font-size:12px;line-height:16px;color:#525866;"><span style="display:flex;gap:2px;"><sc-for list="{{ lg.dots }}" as="ld" hint-placeholder-count="1"><span style="width:6px;height:6px;border-radius:100px;background:{{ ld }};"></span></sc-for></span>{{ lg.t }}</span></sc-for>
+                            </div>
+                            <sc-if value="{{ it.hasLNote }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:18px;color:#717784;padding-top:8px;text-wrap:pretty;">{{ it.lNote }}</span></sc-if>
+                            <sc-if value="{{ it.hasPanel }}" hint-placeholder-val="{{ false }}">
+                              <div style="display:flex;flex-direction:column;gap:12px;padding-top:14px;">
+                                <div style="display:flex;align-items:baseline;gap:8px;"><span style="flex:1;font-size:14px;line-height:24px;color:#191B25;">{{ it.pTitle }}</span><span style="font-size:12px;line-height:20px;color:#717784;">{{ it.pSub }}</span></div>
+                                <sc-if value="{{ it.hasSummary }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ it.summary }}" as="sm" hint-placeholder-count="2"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ sm.tone }}" variant="filled" hint-size="60px,22px">{{ sm.t }}</x-import></sc-for></div></sc-if>
+                                <sc-for list="{{ it.pRows }}" as="pr" hint-placeholder-count="3">
+                                  <div onClick="{{ pr.onClick }}" style="display:flex;align-items:center;gap:8px;min-height:56px;padding:{{ pr.rPad }};background:{{ pr.rBg }};border:{{ pr.rBd }};border-left:{{ pr.rBl }};border-radius:{{ pr.rRad }};cursor:{{ pr.cur }};box-sizing:border-box;">
+                                    <sc-if value="{{ pr.hasBar }}" hint-placeholder-val="{{ false }}"><span style="width:{{ pr.barW }};align-self:stretch;border-radius:{{ pr.barR }};background:{{ pr.bar }};flex-shrink:0;"></span></sc-if>
+                                    <sc-if value="{{ pr.hasAv }}" hint-placeholder-val="{{ false }}"><span style="flex-shrink:0;display:flex;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Avatar" name="{{ pr.av }}" size="32" hint-size="32px,32px"></x-import></span></sc-if>
+                                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+                                      <span style="font-size:14px;line-height:20px;font-weight:{{ pr.tw }};color:#191B25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ pr.title }}</span>
+                                      <span style="font-size:{{ pr.sSize }};line-height:20px;color:#717784;overflow:hidden;text-overflow:ellipsis;white-space:{{ pr.sWs }};">{{ pr.sub }}</span>
+                                      <sc-if value="{{ pr.hasTime }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;line-height:20px;color:#717784;">{{ pr.time }}</span></sc-if>
+                                      <sc-if value="{{ pr.hasChip }}" hint-placeholder-val="{{ false }}"><span style="display:flex;padding-top:2px;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ pr.tone }}" hint-size="60px,22px">{{ pr.chip }}</x-import></span></sc-if>
+                                    </div>
+                                    <sc-if value="{{ pr.chev }}" hint-placeholder-val="{{ false }}"><span style="display:flex;color:#717784;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Chevron2StateRight" size="16" hint-size="16px,16px"></x-import></span></sc-if>
+                                  </div>
+                                </sc-for>
+                                <sc-if value="{{ it.hasMore }}" hint-placeholder-val="{{ false }}"><button onClick="{{ it.onMore }}" style="height:44px;border:none;background:none;color:#4942E4;font-family:Outfit, sans-serif;font-size:14px;font-weight:500;cursor:pointer;">{{ it.moreLabel }}</button></sc-if>
+                                <sc-if value="{{ it.pEmpty }}" hint-placeholder-val="{{ false }}"><span style="font-size:16px;line-height:24px;color:#191B25;padding:4px 0 12px;">{{ it.pEmptyText }}</span></sc-if>
+                              </div>
+                            </sc-if>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isTrip }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;">
+                            <div style="position:relative;height:155px;margin:8px 8px 0;border-radius:12px;overflow:hidden;background:#F3F5F8;">
+                              <div role="img" style="width:100%;height:100%;background:url({{ it.src }}) center / cover no-repeat;"></div>
+                              <div style="position:absolute;left:8px;top:14px;display:flex;gap:8px;"><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="2"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ ch.tone }}" hint-size="56px,24px">{{ ch.t }}</x-import></sc-for></div>
+                              <button onClick="{{ it.onMore }}" aria-label="More" style="position:absolute;right:2px;top:2px;width:44px;height:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#191B25;padding:0;"><span style="width:32px;height:32px;border-radius:6px;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E0E4EA;display:flex;align-items:center;justify-content:center;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="KebabMenu" size="18" hint-size="18px,18px"></x-import></span></button>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:4px;padding:16px;">
+                              <span style="font-weight:600;font-size:16px;line-height:24px;color:#041519;">{{ it.title }}</span>
+                              <sc-for list="{{ it.rows }}" as="m" hint-placeholder-count="2"><div style="display:flex;gap:4px;align-items:center;font-size:14px;line-height:24px;color:#717784;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ m.icon }}" size="16" hint-size="16px,16px"></x-import><span>{{ m.text }}</span></div></sc-for>
+                              <sc-if value="{{ it.hasFoot }}" hint-placeholder-val="{{ false }}">
+                                <div style="display:flex;gap:16px;padding-top:8px;font-size:14px;line-height:24px;"><span style="display:flex;gap:4px;align-items:center;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Travelers2" size="16" hint-size="16px,16px"></x-import>{{ it.footL }}</span><span style="display:flex;gap:4px;align-items:center;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Reciept" size="16" hint-size="16px,16px"></x-import>{{ it.footR }}</span></div>
+                              </sc-if>
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isHero }}" hint-placeholder-val="{{ false }}">
+                          <div style="margin:-16px -16px 0;display:flex;flex-direction:column;background:#FFFFFF;">
+                            <div style="position:relative;height:180px;overflow:hidden;background:#F3F5F8;">
+                              <div role="img" style="width:100%;height:100%;background:url({{ it.src }}) center / cover no-repeat;"></div>
+                              <div style="position:absolute;left:12px;top:14px;display:flex;gap:8px;"><sc-for list="{{ it.chips }}" as="ch" hint-placeholder-count="2"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="{{ ch.tone }}" hint-size="56px,24px">{{ ch.t }}</x-import></sc-for></div>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:4px;padding:16px 20px;border-bottom:1px solid #E0E4EA;">
+                              <span style="font-weight:600;font-size:16px;line-height:24px;color:#041519;">{{ it.title }}</span>
+                              <sc-for list="{{ it.rows }}" as="m" hint-placeholder-count="4"><div style="display:flex;gap:8px;align-items:center;font-size:14px;line-height:24px;color:#717784;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ m.icon }}" size="16" hint-size="16px,16px"></x-import><span>{{ m.text }}</span></div></sc-for>
+                              <div style="display:flex;gap:16px;padding-top:12px;font-size:14px;line-height:24px;"><sc-for list="{{ it.stats }}" as="m" hint-placeholder-count="2"><span style="display:flex;gap:6px;align-items:center;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ m.icon }}" size="16" hint-size="16px,16px"></x-import>{{ m.text }}</span></sc-for></div>
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isSteps }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;">
+                            <sc-for list="{{ it.steps }}" as="sp" hint-placeholder-count="4">
+                              <div onClick="{{ sp.onClick }}" style="display:flex;flex-direction:column;cursor:{{ sp.cur }};">
+                                <div style="display:flex;align-items:center;gap:12px;min-height:32px;">
+                                  <span style="width:20px;height:20px;border-radius:100px;box-sizing:border-box;border:{{ sp.bd }};background:{{ sp.bg }};color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><sc-if value="{{ sp.done }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="CheckFilledNo" size="12" hint-size="12px,12px"></x-import></sc-if></span>
+                                  <span style="flex:1;font-size:14px;line-height:24px;color:{{ sp.color }};">{{ sp.label }}</span>
+                                  <sc-if value="{{ sp.link }}" hint-placeholder-val="{{ false }}"><span style="color:#717784;display:flex;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Chevron2StateRight" size="16" hint-size="16px,16px"></x-import></span></sc-if>
+                                </div>
+                                <sc-if value="{{ sp.line }}" hint-placeholder-val="{{ false }}"><div style="margin-left:9px;height:14px;border-left:1.5px dashed #99A0AE;"></div></sc-if>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isWidget }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;align-items:flex-start;gap:12px;">
+                            <div style="flex:1;display:flex;flex-direction:column;gap:4px;"><span style="font-size:14px;line-height:24px;font-weight:500;">{{ it.label }}</span><span style="font-size:24px;line-height:32px;font-weight:600;">{{ it.value }}</span></div>
+                            <span style="width:48px;height:48px;border-radius:8px;background:{{ it.wBg }};color:{{ it.wColor }};display:flex;align-items:center;justify-content:center;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.icon }}" size="24" hint-size="24px,24px"></x-import></span>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isDark }}" hint-placeholder-val="{{ false }}">
+                          <div style="background:#191B25;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px;color:#FFFFFF;">
+                            <span style="font-size:14px;line-height:24px;font-weight:500;">{{ it.title }}</span>
+                            <span style="font-size:14px;line-height:24px;color:#E0E4EA;">{{ it.text }}</span>
+                            <button onClick="{{ it.onClick }}" style="margin-top:8px;height:44px;border-radius:8px;border:1px solid #E0E4EA;background:#FFFFFF;color:#191B25;font-family:Outfit, sans-serif;font-size:14px;font-weight:500;cursor:pointer;">{{ it.btn }}</button>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isImg }}" hint-placeholder-val="{{ false }}"><div role="img" style="width:{{ it.iw }};height:{{ it.ih }};border-radius:{{ it.ir }};background:url({{ it.src }}) center / cover no-repeat;"></div></sc-if>
+                        <sc-if value="{{ it.isThumbs }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                            <sc-for list="{{ it.srcs }}" as="sr" hint-placeholder-count="1"><div role="img" style="width:72px;height:72px;border-radius:8px;background:url({{ sr }}) center / cover no-repeat;"></div></sc-for>
+                            <button onClick="{{ it.onAdd }}" aria-label="Add image" style="width:72px;height:72px;border-radius:8px;border:1px dashed #99A0AE;background:#FFFFFF;color:#4942E4;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="ImageUpload" size="22" hint-size="22px,22px"></x-import></button>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isEvent }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ it.onClick }}" style="display:flex;flex-direction:column;gap:4px;cursor:pointer;background:#FFFFFF;border-radius:12px;padding:12px;">
+                            <div style="display:flex;align-items:center;gap:8px;"><sc-if value="{{ it.hasType }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:6px;height:24px;padding:0 8px;border-radius:6px;background:#EFF2FF;color:#4942E4;font-size:12px;line-height:16px;font-weight:500;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;display:block;"><path d="{{ it.typeD }}"></path></svg>{{ it.typeLabel }}</span></sc-if><span style="flex:1;font-size:12px;line-height:20px;color:#717784;">{{ it.time }}</span><button onClick="{{ it.onMore }}" aria-label="More" style="width:32px;height:32px;margin:-4px 0;border-radius:6px;border:none;background:#FFFFFF;box-shadow:inset 0 0 0 1px #E0E4EA;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#717784;padding:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="KebabMenu" size="18" hint-size="18px,18px"></x-import></button></div>
+                            <sc-if value="{{ it.hasPhase }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:16px;font-weight:600;color:#717784;text-transform:uppercase;">{{ it.phase }}</span></sc-if>
+                            <span style="font-size:14px;line-height:20px;font-weight:600;">{{ it.title }}</span>
+                            <sc-if value="{{ it.hasMeta }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;line-height:18px;color:#717784;text-wrap:pretty;">{{ it.meta }}</span></sc-if>
+                            <sc-if value="{{ it.hasText }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;line-height:18px;text-wrap:pretty;">{{ it.text }}</span></sc-if>
+                            <sc-if value="{{ it.hasPlace }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;align-items:center;padding:8px;margin-top:4px;border:1px solid #E0E4EA;border-radius:8px;"><span style="width:32px;height:32px;border-radius:8px;background:#EFF2FF;color:#4942E4;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Location" size="16" hint-size="16px,16px"></x-import></span><div style="display:flex;flex-direction:column;min-width:0;"><span style="font-size:12px;line-height:18px;font-weight:600;">{{ it.placeName }}</span><span style="font-size:12px;line-height:16px;color:#717784;">{{ it.placeAddr }}</span></div></div></sc-if>
+                            <sc-if value="{{ it.hasFile }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;display:flex;align-items:center;gap:6px;height:28px;padding:0 10px;margin-top:4px;border-radius:6px;background:#F3F5F8;font-size:12px;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="Document" size="14" hint-size="14px,14px"></x-import>{{ it.file }}</span></sc-if>
+                            <sc-if value="{{ it.hasImg }}" hint-placeholder-val="{{ false }}"><div role="img" style="width:96px;height:64px;border-radius:8px;background:url({{ it.src }}) center / cover no-repeat;margin-top:6px;"></div></sc-if>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isAccHead }}" hint-placeholder-val="{{ false }}">
+                          <div onClick="{{ it.onClick }}" style="display:flex;align-items:center;gap:12px;cursor:pointer;min-height:44px;">
+                            <span style="height:22px;padding:0 8px;border-radius:6px;background:#4942E4;color:#FFFFFF;font-size:12px;line-height:16px;font-weight:600;display:flex;align-items:center;">{{ it.chip }}</span>
+                            <span style="flex:1;font-size:14px;line-height:24px;font-weight:600;">{{ it.title }}</span>
+                            <span style="display:flex;color:#191B25;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.chevName }}" size="20" hint-size="20px,20px"></x-import></span>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isSubAcc }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #E0E4EA;padding-top:6px;">
+                            <div onClick="{{ it.onClick }}" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;min-height:44px;font-size:14px;line-height:24px;font-weight:500;"><span>{{ it.label }}</span><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.chevName }}" size="18" hint-size="18px,18px"></x-import></div>
+                            <sc-if value="{{ it.open }}" hint-placeholder-val="{{ false }}">
+                              <sc-for list="{{ it.vars }}" as="vr" hint-placeholder-count="2">
+                                <div style="display:flex;flex-direction:column;gap:6px;"><span style="font-size:12px;line-height:20px;color:#717784;">{{ vr.k }}</span><div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ vr.vals }}" as="vv" hint-placeholder-count="2"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.StatusChip" tone="grey" hint-size="40px,20px">{{ vv }}</x-import></sc-for></div></div>
+                              </sc-for>
+                            </sc-if>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isPills }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                            <sc-for list="{{ it.pills }}" as="pl" hint-placeholder-count="3">
+                              <div style="height:40px;box-sizing:border-box;padding:0 14px 0 {{ pl.padL }};border-radius:100px;border:1px solid #E0E4EA;background:#FFFFFF;display:flex;align-items:center;gap:8px;font-size:14px;line-height:20px;color:#191B25;">
+                                <sc-if value="{{ pl.hasAv }}" hint-placeholder-val="{{ true }}"><span style="width:28px;height:28px;border-radius:100px;background:#F3F5F8;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;">{{ pl.ini }}</span></sc-if>
+                                <span>{{ pl.t }}</span>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isBand }}" hint-placeholder-val="{{ false }}">
+                          <div style="position:relative;margin:-8px -20px 0;padding:24px 20px 20px;background:#F8F9FF;border-radius:16px 16px 0 0;border-bottom:1px solid #E0E4EA;display:flex;flex-direction:column;gap:14px;">
+                            <button onClick="{{ it.onClose }}" aria-label="Close" style="position:absolute;left:50%;top:-68px;transform:translateX(-50%);width:48px;height:48px;border-radius:100px;border:none;background:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#191B25;padding:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="CloseFilledNo" size="20" hint-size="20px,20px"></x-import></button>
+                            <sc-for list="{{ it.lines }}" as="bl" hint-placeholder-count="1">
+                              <div style="display:flex;gap:12px;align-items:flex-start;">
+                                <sc-if value="{{ bl.hasIcon }}" hint-placeholder-val="{{ false }}"><span style="display:flex;color:#191B25;padding-top:2px;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ bl.icon }}" size="20" hint-size="20px,20px"></x-import></span></sc-if>
+                                <sc-if value="{{ bl.hasSw }}" hint-placeholder-val="{{ false }}"><span style="width:14px;height:14px;border-radius:2px;background:{{ bl.sw }};flex-shrink:0;margin:5px 3px 0;"></span></sc-if>
+                                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;"><span style="font-size:16px;line-height:24px;color:#191B25;text-wrap:pretty;">{{ bl.t }}</span><sc-if value="{{ bl.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;line-height:20px;color:#717784;">{{ bl.sub }}</span></sc-if></div>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isInfo }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div style="display:flex;gap:10px;align-items:center;font-size:14px;line-height:20px;color:#717784;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.icon }}" size="16" hint-size="16px,16px"></x-import>{{ it.label }}</div>
+                            <sc-if value="{{ it.hasVal }}" hint-placeholder-val="{{ false }}"><span style="padding-left:26px;font-size:14px;line-height:22px;color:#191B25;text-wrap:pretty;">{{ it.value }}</span></sc-if>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isSheetHead }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:8px;">
+                            <div style="width:40px;height:4px;border-radius:100px;background:#E0E4EA;align-self:center;"></div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                              <span style="font-weight:600;font-size:16px;line-height:24px;">{{ it.title }}</span>
+                              <button onClick="{{ it.onClose }}" aria-label="Close" style="width:44px;height:44px;margin-right:-12px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#191B25;padding:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="CloseFilledNo" size="20" hint-size="20px,20px"></x-import></button>
+                            </div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ it.isDlgHead }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;flex-direction:column;gap:6px;">
+                            <sc-if value="{{ it.hasIcon }}" hint-placeholder-val="{{ false }}"><span style="width:44px;height:44px;border-radius:100px;background:{{ it.dBg }};color:{{ it.dColor }};display:flex;align-items:center;justify-content:center;margin-bottom:6px;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ it.icon }}" size="22" hint-size="22px,22px"></x-import></span></sc-if>
+                            <span style="font-weight:600;font-size:16px;line-height:24px;">{{ it.title }}</span>
+                            <span style="font-size:14px;line-height:20px;color:#717784;text-wrap:pretty;">{{ it.text }}</span>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ fr.hasFooter }}" hint-placeholder-val="{{ false }}">
+                <sc-if value="{{ fr.hasFnote }}" hint-placeholder-val="{{ false }}"><div style="flex-shrink:0;background:#FFFFFF;border-top:1px solid #E0E4EA;padding:8px 16px 0;font-size:12px;line-height:18px;color:#717784;">{{ fr.fnote }}</div></sc-if>
+                <div style="flex-shrink:0;display:flex;gap:8px;background:#FFFFFF;border-top:{{ fr.footBd }};padding:12px 16px 20px;box-sizing:border-box;">
+                  <sc-for list="{{ fr.footer }}" as="b" hint-placeholder-count="2">
+                    <div style="flex:1;min-width:0;"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Button" type="{{ b.type }}" size="lg" fullWidth="{{ true }}" leadingIcon="{{ b.icon }}" onClick="{{ b.onClick }}" dc-props="{{ b.dcp }}" hint-size="100%,48px">{{ b.label }}</x-import></div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ fr.hasNav }}" hint-placeholder-val="{{ false }}">
+                <div style="flex-shrink:0;display:flex;background:#FFFFFF;border-top:1px solid #E0E4EA;padding:6px 4px 18px;">
+                  <sc-for list="{{ fr.nav }}" as="n" hint-placeholder-count="4">
+                    <button onClick="{{ n.onClick }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:48px;justify-content:center;background:none;border:none;cursor:pointer;color:{{ n.color }};font-family:Sora, sans-serif;font-size:12px;line-height:20px;">
+                      <sc-if value="{{ n.hasIcon }}" hint-placeholder-val="{{ true }}"><x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Icon" name="{{ n.icon }}" size="20" hint-size="20px,20px"></x-import></sc-if><sc-if value="{{ n.hasAv }}" hint-placeholder-val="{{ false }}"><div role="img" style="width:24px;height:24px;border-radius:100px;overflow:hidden;flex-shrink:0;background-image:url({{ n.av }});background-size:150%;background-position:50% 30%;background-repeat:no-repeat;box-shadow:0 0 0 1.5px {{ n.avBd }};"></div></sc-if>{{ n.label }}
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ fr.hasFab }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;right:16px;bottom:{{ fr.fabB }};z-index:5;border-radius:8px;box-shadow:2px 2px 40px rgba(79,92,216,0.35);">
+                  <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Button" type="primary" size="lg" leadingIcon="Add" onClick="{{ fr.onFab }}" hint-size="140px,48px">{{ fr.fabLabel }}</x-import>
+                </div>
+              </sc-if>
+              <sc-if value="{{ fr.hasToast }}" hint-placeholder-val="{{ false }}">
+                <div style="position:absolute;left:16px;right:16px;bottom:{{ fr.toastB }};z-index:20;">
+                  <x-import component-from-global-scope="VoyitaDesignSystem_162d8e.Snackbar" tone="success" icon="SuccessBadge" hint-size="100%,44px">{{ fr.toast }}</x-import>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;canvas&quot;,&quot;phone&quot;],&quot;default&quot;:&quot;canvas&quot;,&quot;tsType&quot;:&quot;'canvas' | 'phone'&quot;,&quot;section&quot;:&quot;View&quot;},&quot;group&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:14,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;View&quot;},&quot;screen&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Trips_Active&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;View&quot;}}">
+const IC = { back: 'Chevron2StateLeft', chev: 'Chevron2StateRight', down: 'Chevron2StateDown', up: 'Chevron2StateUp', lock: 'Lock', search: 'Search4', cal: 'Calendar2', user: 'Profile', trips: 'Trips2', mail: 'Email2', phone: 'Contact', pin: 'Location', file: 'Document', eye: 'EyeStateTrue', check: 'CheckFilledNo', info: 'Info', users: 'Travelers2', bldg: 'Clients2', dollar: 'Dollar', tag: 'AddOn', receipt: 'Reciept', gear: 'Setting', route: 'Itinerary', logout: 'Logout', clock: 'Time', plus: 'Add', edit: 'Edit', trash: 'Delete', more: 'KebabMenu', upload: 'Upload', filter: 'Filter', x: 'CloseFilledNo', bell: 'NotificationNotificationNo', send: 'Send', plane: 'Send', bus: 'Bus', train: 'Bus', car: 'Bus', ship: 'Bus', bed: 'Room', fork: 'Services', sparkle: 'Ai', warn: 'Info', download: 'Download', image: 'ImageUpload', shield: 'Lock', history: 'History', copy: 'Copy', note: 'Document', id: 'ID', staff: 'UserAndStaff', folder: 'Folder', config: 'Configuration', list: 'List', link: 'Link', trips: 'Trips2' };
+const ic = (n) => (n ? IC[n] || n : undefined);
+const TONE = { draft: 'yellow', active: 'green', blue: 'blue', grey: 'grey', red: 'red' };
+const tone = (t) => TONE[t] || t || 'grey';
+const NOTE = { info: ['#EFF2FF', '#4942E4'], warn: ['#FFF1B3', '#AE890B'], err: ['#FFF2F7', '#CA054D'], ok: ['#CDFFE3', '#288F5A'] };
+const TRAIL = { select: 'Chevron2StateDown', date: 'Calendar2', time: 'Time' };
+const NAVS = { TA: [['All Trips', 'Trips2', 'Trips_Active'], ['Search', 'Search4', 'Search_Recent'], ['Calendar', 'Calendar2', 'Trips_Calendar'], ['Profile', null, 'Profile_View', null, 'assets/avatar-sample.png']] };
+const ETYPE = {
+  'Activity': 'M22 12h-4l-3 9L9 3l-3 9H2',
+  'Food & Drink': 'M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2 M7 2v20 M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7',
+  'Lodging': 'M2 4v16 M2 8h18a2 2 0 0 1 2 2v10 M2 17h20 M6 8v9',
+  'Flight': 'M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z',
+  'Train': 'M8 3.1V7a4 4 0 0 0 8 0V3.1 M9 15l-1-1 M15 15l1-1 M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z M8 19l-2 3 M16 19l2 3',
+  'Car': 'M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2 M5 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M9 17h6 M15 17a2 2 0 1 0 4 0a2 2 0 1 0-4 0',
+  'Bus': 'M8 6v6 M15 6v6 M2 12h19.6 M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3 M7 18a2 2 0 1 0 4 0a2 2 0 1 0-4 0 M9 18h5 M16 18a2 2 0 1 0 4 0a2 2 0 1 0-4 0',
+  'Cruise': 'M12 10.189V14 M12 2v3 M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6 M19.38 20A11.6 11.6 0 0 0 21 14l-8.188-3.639a2 2 0 0 0-1.624 0L3 14a11.6 11.6 0 0 0 2.81 7.76 M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1s1.2 1 2.5 1c2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1',
+  'Tour': 'M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z M15 5.764v15 M9 3.236v15',
+  'Information': 'M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20 M12 16v-4 M12 8h.01',
+  'Other': 'M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20 M8 12h.01 M12 12h.01 M16 12h.01'
+};
+const WT = { yellow: ['#FFF1B3', '#AE890B'], red: ['#FFF2F7', '#CA054D'] };
+const MARKS = { 2: '#CA054D', 3: '#CA054D', 5: '#4942E4', 12: '#AE890B', 16: '#288F5A', 17: '#288F5A', 18: '#288F5A', 24: '#CA054D', 25: '#CA054D' };
+const BIG = { brand: ['#EFF2FF', '#4942E4'], alert: ['#FFF2F7', '#CA054D'], success: ['#CDFFE3', '#288F5A'] };
+
+class Component extends DCLogic {
+  state = { frames: {}, vals: {}, toasts: {} };
+  componentDidMount() {
+    if (!window.VM) this._iv = setInterval(() => { if (window.VM) { clearInterval(this._iv); this.forceUpdate(); } }, 80);
+    this.syncTabs();
+  }
+  componentDidUpdate() { this.syncTabs(); }
+  syncTabs() {
+    clearTimeout(this._st);
+    this._st = setTimeout(() => document.querySelectorAll('[data-tabsrow]').forEach((row) => {
+      const on = row.querySelector('[data-tabon="1"]');
+      if (on && row.dataset.done !== on.textContent) { row.scrollLeft = Math.max(0, on.offsetLeft - 16); row.dataset.done = on.textContent; }
+    }), 60);
+  }
+  componentWillUnmount() { clearInterval(this._iv); Object.values(this._tt || {}).forEach(clearTimeout); }
+  setVal(k, v) { this.setState((s) => ({ vals: Object.assign({}, s.vals, { [k]: v }) })); }
+  showToast(slot, text) {
+    this._tt = this._tt || {};
+    clearTimeout(this._tt[slot]);
+    this.setState((s) => ({ toasts: Object.assign({}, s.toasts, { [slot]: text }) }));
+    this._tt[slot] = setTimeout(() => this.setState((s) => ({ toasts: Object.assign({}, s.toasts, { [slot]: null }) })), 2600);
+  }
+  go(ctx, to, toast) {
+    const S = window.VM.screens;
+    let dest = to;
+    if (to === '<') dest = ctx.scr.back;
+    if (to === '^') dest = ctx.scr.base || ctx.scr.back;
+    if (dest && S[dest]) this.setState((s) => ({ frames: Object.assign({}, s.frames, { [ctx.slot]: dest }) }));
+    if (toast) this.showToast(ctx.slot, toast);
+  }
+  reset(slot, key) {
+    this.setState((s) => {
+      const vals = {};
+      Object.keys(s.vals).forEach((k) => { if (!k.startsWith(slot + '|')) vals[k] = s.vals[k]; });
+      return { frames: Object.assign({}, s.frames, { [slot]: key }), vals };
+    });
+  }
+  btn(b, ctx, n) {
+    const [label, kind, icon, to, toast] = b;
+    const k = kind || 'primary';
+    const type = k === 'danger' ? 'primary' : (k === 'dangerline' || k === 'ghost') ? 'secondary' : k;
+    const style = k === 'danger' ? { background: '#CA054D' } : k === 'dangerline' ? { color: '#CA054D' } : {};
+    return { label: n != null ? label.replace('{n}', n) : label, type, icon: ic(icon), dcp: { style }, onClick: () => this.go(ctx, to, toast) };
+  }
+
+  item(it, ctx, idx, list, gap) {
+    const s = this.state, k = ctx.slot + '|' + ctx.key + '|' + ctx.ci + '.' + idx;
+    const o = { w: it.half ? 'calc(50% - ' + gap / 2 + 'px)' : '100%' };
+    const go = (to, toast) => () => this.go(ctx, to, toast);
+    switch (it.t) {
+      case 'field': {
+        const kind = it.kind || 'input';
+        const v = s.vals[k] !== undefined ? s.vals[k] : it.value;
+        Object.assign(o, { label: it.label, req: !!it.req, val: v, ph: it.ph || '', help: it.err || it.help || '', hasHelp: !!(it.err || it.help), helpColor: it.err ? '#CA054D' : '#717784', onChange: (e) => this.setVal(k, e.target.value) });
+        if (kind === 'textarea') { o.isArea = true; o.areaBd = it.err ? '#CA054D' : '#E0E4EA'; }
+        else Object.assign(o, { isField: true, state: it.err ? 'alert' : (v ? 'filled' : 'default'), lead: ic(it.icon), trail: TRAIL[kind], ro: !!TRAIL[kind], inType: it.icon === 'lock' ? 'password' : 'text', onClick: it.to ? go(it.to) : undefined });
+        return o;
+      }
+      case 'lrow': return Object.assign(o, { isLRow: true, lText: it.text || it.ph, lColor: it.text ? '#191B25' : '#99A0AE', hasAdd: !!it.add, noAdd: !it.add, hasDel: !!it.del, onAdd: go(null, it.add), onDel: go(null, it.del) });
+      case 'table': return Object.assign(o, { isTable: true, head: it.head, cols: it.cols || ('repeat(' + it.head.length + ', minmax(0, 1fr))'), minW: it.minW || '100%', rows: it.rows.map((r, i, a) => ({ cells: r, bd: i < a.length - 1 ? '1px solid #E0E4EA' : 'none' })) });
+      case 'cpick': {
+        const on = s.vals[k] !== undefined ? s.vals[k] : it.on;
+        const ini = it.name.split(', ').reverse().map((w) => w[0]).join('').toUpperCase();
+        return Object.assign(o, { isPick: true, name: it.name, email: it.email, phone: it.phone, ini, on, bd: on ? '#4942E4' : '#E0E4EA', cBd: on ? 'none' : '1.5px solid #525866', cBg: on ? '#4942E4' : '#FFFFFF', cColor: on ? '#FFFFFF' : '#525866', onTap: () => this.setVal(k, !on) });
+      }
+      case 'toggle': case 'check': {
+        const on = s.vals[k] !== undefined ? s.vals[k] : it.on;
+        return Object.assign(o, { isToggle: it.t === 'toggle', isCheck: it.t === 'check', label: it.label, sub: it.sub, hasSub: !!it.sub, on, onTap: () => { if (it.to) this.go(ctx, it.to); else this.setVal(k, !on); } });
+      }
+      case 'radio': {
+        const gk = ctx.slot + '|' + ctx.key + '|' + ctx.ci + '|radio';
+        const def = list.findIndex((x) => x.t === 'radio' && x.on);
+        const sel = s.vals[gk] !== undefined ? s.vals[gk] : def;
+        const on = sel === idx;
+        return Object.assign(o, { isRadio: true, label: it.label, sub: it.sub, hasSub: !!it.sub, on, rBd: on ? '#4942E4' : '#E0E4EA', rBg: on ? '#F8F9FF' : '#FFFFFF', onTap: () => { if (it.to && !on) this.go(ctx, it.to); else this.setVal(gk, idx); } });
+      }
+      case 'head': {
+        const L = it.lead || {};
+        const big = !!it.big;
+        return Object.assign(o, {
+          isHead: true, align: it.align || 'center', minH: it.rowH ? it.rowH + 'px' : '0px', cur: it.to ? 'pointer' : 'inherit',
+          onClick: it.to || it.toast ? (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.go(ctx, it.to, it.toast); } : undefined,
+          hasImg: !!L.img, imgSrc: L.img, imgW: L.contain ? '36px' : '56px', imgH: L.contain ? '36px' : '56px', imgFit: L.contain ? 'contain' : 'cover', imgRad: L.round || /avatar/.test(L.img || '') ? '100px' : '8px', hasAv: !!L.av, avName: L.av, avSize: L.size || 36, hasTile: !!L.tile, tileIcon: ic(L.tile), hasLIcon: !!L.icon, lIcon: ic(L.icon), lColor: L.color || '#4942E4',
+          hasTitle: !!it.title, title: it.title || '', tSize: big ? '16px' : '14px', tLh: big ? '24px' : '20px', tW: it.tw || 600, hasSuffix: !!it.suffix, suffix: it.suffix,
+          hasKicker: !!it.kicker, kicker: it.kicker, hasSub: !!it.sub, sub: it.sub, hasBody: !!it.body, body: it.body,
+          hasTag: !!it.tag, tagText: it.tag ? it.tag[0] : '', tagTone: it.tag ? tone(it.tag[1]) : 'grey',
+          chips: (it.chips || []).map((c) => ({ t: c[0], tone: tone(c[1]) })),
+          hasRT: !!it.rightText, rightText: it.rightText,
+          hasRL: !!it.rightLink, rightLink: it.rightLink, rlIcon: ic(it.rightIcon), onRL: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.go(ctx, it.rightTo, it.rightToast); },
+          icons: (it.icons || []).map((x) => { const y = typeof x === 'string' ? { icon: x } : x; return { name: ic(y.icon), color: y.icon === 'trash' ? '#CA054D' : '#717784', onClick: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.go(ctx, y.to, y.toast); } }; }),
+          chev: !!it.chev,
+        });
+      }
+      case 'meta': return Object.assign(o, { isMeta: true, mSize: it.lg ? '14px' : '12px', mLh: it.lg ? '24px' : '16px', mColor: it.lg ? '#717784' : '#191B25', rows: it.rows.map((r) => ({ icon: ic(r[0]), text: r[1] })) });
+      case 'div': return Object.assign(o, { isDiv: true });
+      case 'text': {
+        const K = { label: ['12px', '20px', 600, '#717784', 'uppercase'], h: ['14px', '24px', 600, '#191B25', 'none'], muted: ['12px', '18px', 400, '#717784', 'none'], err: ['12px', '18px', 400, '#CA054D', 'none'] }[it.kind] || ['13px', '20px', 400, '#191B25', 'none'];
+        return Object.assign(o, { isText: true, req: !!it.req, tAlign: it.align || 'left', text: it.text, tSize: K[0], tLh: K[1], tW: K[2], tColor: K[3], tCase: K[4] });
+      }
+      case 'stats': return Object.assign(o, { isStats: true, cols: 'repeat(' + it.cols + ',minmax(0,1fr))', cells: it.cells.map((c) => ({ l: c[0], v: c[1] })) });
+      case 'bar': return Object.assign(o, { isBar: true, rColor: it.rColor || '#717784', hasLabel: !!it.label, label: it.label, right: it.right, pct: Math.max(it.pct, 0) + '%' });
+      case 'btns': {
+        let n = null;
+        if (ctx.overlay) n = list.filter((x, i) => x.t === 'check' && (s.vals[ctx.slot + '|' + ctx.key + '|' + ctx.ci + '.' + i] !== undefined ? s.vals[ctx.slot + '|' + ctx.key + '|' + ctx.ci + '.' + i] : x.on)).length;
+        return Object.assign(o, { isBtns: true, btns: it.btns.map((b) => this.btn(b, ctx, n)) });
+      }
+      case 'link': return Object.assign(o, { isLink: true, label: it.label, lIcon: it.trail ? undefined : ic(it.icon), tIcon: it.trail ? ic(it.icon) : undefined, onClick: go(it.to, it.toast) });
+      case 'chips': return Object.assign(o, { isChips: true, indent: it.indent ? '48px' : '0px', chips: it.chips.map((c) => ({ t: c[0], tone: tone(c[1]) })) });
+      case 'note': { const n = NOTE[it.kind] || NOTE.info; return Object.assign(o, { isNote: true, text: it.text, nBg: n[0], nColor: n[1], nIcon: ic(it.icon) }); }
+      case 'seg': {
+        const cur = s.vals[k] !== undefined ? s.vals[k] : it.active;
+        return Object.assign(o, { isSeg: true, items: it.items.map((x) => { const on = x.label === cur; return { label: x.label, bg: on ? '#EFF2FF' : '#FFFFFF', color: on ? '#4942E4' : '#191B25', bd: on ? '#EFF2FF' : '#E0E4EA', onClick: () => { if (x.to && x.to !== ctx.key) this.go(ctx, x.to); else this.setVal(k, x.label); } }; }) });
+      }
+      case 'search': {
+        const v = s.vals[k] !== undefined ? s.vals[k] : it.value;
+        return Object.assign(o, { isSearch: true, val: v, ph: it.ph, onChange: (e) => this.setVal(k, e.target.value), onClear: () => this.setVal(k, ''), hasFilter: !!it.filter, onFilter: go(it.filter) });
+      }
+      case 'empty': return Object.assign(o, { isEmpty: true, icon: ic(it.icon), title: it.title, text: it.text, hasBtn: !!it.btn, btn: it.btn, onClick: go(it.to) });
+      case 'kv': {
+        const next = list[idx + 1];
+        return Object.assign(o, { isKv: true, label: it.label, value: it.value, hasValue: it.value != null, hasChips: !!it.chips, chips: (it.chips || []).map((c) => ({ t: c[0], tone: tone(c[1]) })), bd: next && next.t === 'kv' ? '1px solid #E0E4EA' : 'none' });
+      }
+      case 'upload': return Object.assign(o, { isUpload: true, title: it.title, sub: it.sub, icon: ic(it.icon), onClick: go(null, it.toast) });
+      case 'split': return Object.assign(o, { isSplit: true, left: it.left, right: it.right });
+      case 'box': return Object.assign(o, { isBox: true, title: it.title, sub: it.sub });
+      case 'tiles': return Object.assign(o, { isTiles: true, _et: 0, cols: 'repeat(' + it.cols + ',minmax(0,1fr))', tiles: it.tiles.map((t, i) => {
+        const tk = k + '.' + i; const on = it.toggle ? (s.vals[tk] !== undefined ? s.vals[tk] : !!t[3]) : false;
+        const et = /^et:/.test(t[0]) ? ETYPE[t[0].slice(3)] : null;
+        return { isSvg: !!et, isDs: !et, d: et || '', icon: et ? '' : ic(t[0]), label: t[1], bd: on ? '#4942E4' : '#E0E4EA', bg: on ? '#EFF2FF' : '#FFFFFF', color: on ? '#4942E4' : '#191B25', onClick: it.toggle ? () => this.setVal(tk, !on) : go(t[2]) };
+      }) });
+      case 'tripsub': return Object.assign(o, { isTripsub: true, text: it.text });
+      case 'brand': return Object.assign(o, { isBrand: true });
+      case 'h1': return Object.assign(o, { isH1: true, title: it.title, sub: it.sub });
+      case 'links': return Object.assign(o, { isLinks: true, hasPre: !!it.pre, pre: it.pre, justify: it.pre || it.center ? 'center' : 'space-between', links: it.links.map((l) => ({ label: l[0], onClick: go(l[1], l[2]) })) });
+      case 'otp': return Object.assign(o, { isOtp: true, cells: it.cells.map((v, i) => ({ v, bd: it.err ? '#CA054D' : i === it.active ? '#4942E4' : '#E0E4EA' })) });
+      case 'big': { const b = BIG[it.tone] || BIG.brand; return Object.assign(o, { isBig: true, icon: ic(it.icon), bBg: b[0], bColor: b[1] }); }
+      case 'skel': return Object.assign(o, { isSkel: true });
+      case 'cal': {
+        const sel = s.vals[k] !== undefined ? s.vals[k] : (it.sel || 5);
+        const marks = it.marks || MARKS, days = [];
+        const fk = k + '|f', fi = s.vals[fk] !== undefined ? s.vals[fk] : 0;
+        const dotsFor = (d) => { const a = it.dots ? it.dots(d, fi) : (marks[d] ? [marks[d]] : []); return a; };
+        for (let b = 0; b < (it.offset || 0); b++) days.push({ n: '', label: '', bd: 'transparent', color: '#191B25', dots: [], more: false, onClick: undefined });
+        for (let d = 1; d <= (it.len || 30); d++) { const on = d === sel; const a = dotsFor(d); const lv = it.countMode ? (a.length >= 4 ? 3 : a.length >= 2 ? 2 : a.length) : -1;
+          const hb = ['transparent', '#EFF2FF', '#C7C5F7', '#4942E4'];
+          days.push({ n: d, label: (d < 10 ? '0' : '') + d, bd: on ? '#4942E4' : 'transparent', ring: it.countMode && on ? '0 0 0 2px #FFFFFF, 0 0 0 4px #191B25' : 'none', fw: lv > 0 ? 600 : 400, bg: it.countMode ? hb[lv] : on ? '#4942E4' : 'transparent', color: d === (it.today || 1) ? '#4942E4' : '#191B25', dots: a.filter((c, i) => a.indexOf(c) === i).slice(0, 3).map((c) => ({ c })), few: !it.countMode && a.length <= 3, more: !it.countMode && a.length > 3, count: a.length, pBg: on ? '#FFFFFF' : '#EFF2FF', onClick: () => { this.setVal(k, d); if (it.dayToast) this.showToast(ctx.slot, it.dayToast.replace('{d}', d)); } }); }
+        const pan = it.panel ? it.panel(sel, fi) : null;
+        const xk = k + '|x|' + sel, ex = !!s.vals[xk], cap = it.maxRows || 3;
+        const allRows = pan ? pan.rows : [], cut = !ex && allRows.length > cap + 1;
+        Object.assign(o, { hasFilters: !!it.filters, filters: (it.filters || []).map((t, i) => ({ t, bg: i === fi ? '#4942E4' : '#FFFFFF', bd: i === fi ? '#4942E4' : '#E0E4EA', color: i === fi ? '#FFFFFF' : '#191B25', onClick: () => this.setVal(fk, i) })),
+          hasPanel: !!pan, pTitle: pan ? pan.title : '', pSub: pan ? pan.sub : '', pEmpty: !!pan && !pan.rows.length, pEmptyText: pan ? pan.empty : '',
+          hasSummary: !!(pan && pan.summary), summary: pan && pan.summary ? pan.summary.map((x) => ({ t: x[0], tone: tone(x[1]), c: ({ blue: '#4942E4', green: '#288F5A', grey: '#99A0AE', red: '#CA054D', draft: '#AE890B', active: '#288F5A' })[x[1]] || '#717784' })) : [],
+          hasMore: allRows.length > cap + 1, moreLabel: ex ? 'Show less' : 'Show all ' + allRows.length, onMore: () => this.setVal(xk, !ex),
+          pRows: (cut ? allRows.slice(0, cap) : allRows).map((r) => { const card = !!r.bar; return { hasBar: false, rBg: card ? (r.tint || '#F8F9FF') : '#FFFFFF', rBd: card ? 'none' : '1px solid #E0E4EA', rBl: card ? '2px solid ' + r.bar : (r.av ? '1px solid #E0E4EA' : 'none'), rRad: card ? '0 8px 8px 0' : '12px', rPad: '12px', cur: r.to ? 'pointer' : 'default', hasAv: !!r.av, av: r.av, title: r.title, tw: card ? 400 : 500, sub: r.sub, sSize: card ? '14px' : '12px', sWs: card ? 'nowrap' : 'normal', hasTime: !!r.time, time: r.time || '', hasChip: !!r.chip, chip: r.chip ? r.chip[0] : '', tone: r.chip ? tone(r.chip[1]) : 'grey', chev: !card && !!r.to, onClick: () => this.go(ctx, r.to, r.toast) }; }) });
+        return Object.assign(o, { isCal: true, hasLNote: !!it.lNote, lNote: it.lNote || '', month: it.month || 'June 2025', wd: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], days, legend: it.legend ? it.legend.map((l) => ({ t: l[0], c: l[1], dots: Array.isArray(l[1]) ? l[1] : [l[1]] })) : [{ t: 'Available', dots: ['#288F5A'] }, { t: 'Tentative', dots: ['#AE890B'] }, { t: 'Unavailable', dots: ['#CA054D'] }, { t: 'Meeting', dots: ['#4942E4'] }] });
+      }
+      case 'pills': return Object.assign(o, { isPills: true, pills: it.pills.map((p) => { const av = !/^\+/.test(p); return { t: p, hasAv: av, padL: av ? '6px' : '14px', ini: p.split(/[ ,]+/).filter(Boolean).map((w) => w[0]).slice(0, 2).reverse().join('').toUpperCase() }; }) });
+      case 'tripcard': return Object.assign(o, { isTrip: true, src: 'assets/trip/7dc4af9d109027c5.jpg', title: it.title, chips: it.chips.map((c) => ({ t: c[0], tone: tone(c[1]) })), rows: it.rows.map((r) => ({ icon: ic(r[0]), text: r[1] })), hasFoot: !!it.foot, footL: it.foot ? it.foot[0] : '', footR: it.foot ? it.foot[1] : '', onMore: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.go(ctx, it.more); } });
+      case 'hero': return Object.assign(o, { isHero: true, src: it.src, title: it.title, chips: it.chips.map((c) => ({ t: c[0], tone: tone(c[1]) })), rows: it.rows.map((r) => ({ icon: ic(r[0]), text: r[1] })), stats: it.stats.map((r) => ({ icon: ic(r[0]), text: r[1] })) });
+      case 'steps': return Object.assign(o, { isSteps: true, steps: it.items.map((x, i, a) => ({ label: x[0], done: !!x[1], line: i < a.length - 1, link: !!x[2], cur: x[2] ? 'pointer' : 'default', bd: x[1] ? 'none' : '1.5px solid #99A0AE', bg: x[1] ? '#288F5A' : '#FFFFFF', color: x[1] ? '#191B25' : '#717784', onClick: x[2] ? go(x[2]) : undefined })) });
+      case 'widget': { const w = WT[it.tone] || WT.yellow; return Object.assign(o, { isWidget: true, label: it.label, value: it.value, icon: it.icon, wBg: w[0], wColor: w[1] }); }
+      case 'dark': return Object.assign(o, { isDark: true, title: it.title, text: it.text, btn: it.btn[0], onClick: go(it.btn[1], it.btn[2]) });
+      case 'img': return Object.assign(o, { isImg: true, src: it.src, iw: it.w || '100%', ih: (it.h || 120) + 'px', ir: it.round || (/avatar/.test(it.src || '') && (it.h || 120) <= 120) ? '100px' : '8px' });
+      case 'thumbs': return Object.assign(o, { isThumbs: true, srcs: it.srcs, onAdd: go(null, it.add) });
+      case 'event': return Object.assign(o, { isEvent: true, hasPhase: !!it.phase, phase: it.phase || '', hasMeta: !!it.meta, meta: it.meta || '', hasText: !!it.text, hasPlace: !!it.place, placeName: it.place ? it.place[0] : '', placeAddr: it.place ? it.place[1] : '', hasFile: !!it.file, file: it.file || '', hasType: !!it.etype, typeLabel: it.etype || '', typeD: ETYPE[it.etype] || '', time: it.time, title: it.title, text: it.text, hasImg: !!it.src, src: it.src, onClick: go(it.to), hasMore: !!it.more, onMore: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.go(ctx, it.more); } });
+      case 'accHead': return Object.assign(o, { isAccHead: true, chip: it.chip, title: it.title, chevName: it.open ? 'Chevron2StateUp' : 'Chevron2StateDown', onClick: it.onToggle });
+      case 'subacc': { const op = s.vals[k] !== undefined ? s.vals[k] : !!it.open; return Object.assign(o, { isSubAcc: true, label: it.label, open: op, chevName: op ? 'Chevron2StateUp' : 'Chevron2StateDown', vars: it.items.map((v) => ({ k: v[0], vals: v[1] })), onClick: () => this.setVal(k, !op) }); }
+      case 'band': return Object.assign(o, { isBand: true, onClose: go('^'), lines: it.lines.map((l) => ({ t: l.t, sub: l.sub, hasSub: !!l.sub, hasIcon: !!l.icon, icon: ic(l.icon), hasSw: !!l.sw, sw: l.sw })) });
+      case 'info': return Object.assign(o, { isInfo: true, icon: ic(it.icon), label: it.label, value: it.value, hasVal: !!it.value });
+      case 'sheetHead': return Object.assign(o, { isSheetHead: true, title: it.title, onClose: go('^') });
+      case 'dlgHead': return Object.assign(o, { isDlgHead: true, title: it.title, text: it.text, hasIcon: !!it.icon, icon: ic(it.icon), dBg: it.icon === 'warn' || it.icon === 'trash' ? '#FFF2F7' : '#EFF2FF', dColor: it.icon === 'warn' || it.icon === 'trash' ? '#CA054D' : '#4942E4' });
+    }
+    return o;
+  }
+
+  container(c, ctx, ci) {
+    const cx = Object.assign({}, ctx, { ci });
+    const base = { pos: 'relative', l: 'auto', r: 'auto', t: 'auto', b: 'auto', tf: 'none', z: 'auto', mh: 'none', ov: 'visible', sh: 'none' };
+    let st;
+    if (c.kind === 'scrim') st = Object.assign(base, { pos: 'absolute', l: '0px', r: '0px', t: '0px', b: '0px', z: 10, bg: 'rgba(25,27,37,0.4)', bd: 'none', rad: '0px', pad: '0px', gap: '0px' });
+    else if (c.kind === 'sheet') st = Object.assign(base, { pos: 'absolute', l: '0px', r: '0px', b: '0px', z: 11, bg: '#FFFFFF', bd: 'none', rad: '16px 16px 0 0', pad: c.band ? '8px 20px 24px' : '8px 20px 24px', gap: c.band ? '20px' : '14px', mh: c.band ? 'none' : '88%', ov: c.band ? 'visible' : 'auto' });
+    else if (c.kind === 'dialog') st = Object.assign(base, { pos: 'absolute', l: '24px', r: '24px', t: '50%', tf: 'translateY(-50%)', z: 11, bg: '#FFFFFF', bd: 'none', rad: '12px', pad: '20px', gap: '16px', sh: '2px 2px 40px rgba(79,92,216,0.1)' });
+    else if (c.bare) st = Object.assign(base, { bg: 'transparent', bd: 'none', rad: '0px', pad: '0px', gap: (c.gap || 12) + 'px' });
+    else st = Object.assign(base, { bg: c.accBg || '#FFFFFF', bd: c.accBg ? 'none' : '1px solid #E0E4EA', rad: c.rad ? c.rad + 'px' : c.flat ? '8px' : '12px', pad: (c.pad != null ? c.pad : 16) + 'px', gap: (c.gap != null ? c.gap : 16) + 'px', ov: c.pad === 0 ? 'hidden' : 'visible' });
+    const gap = parseInt(st.gap, 10) || 0;
+    st.cur = c.to || c.kind === 'scrim' ? 'pointer' : 'auto';
+    st.onClick = c.kind === 'scrim' ? () => this.go(cx, '^') : c.to ? () => this.go(cx, c.to) : undefined;
+    let list = c.items || [];
+    if (c.acc) {
+      const ak = ctx.slot + '|' + ctx.key + '|' + ci + '|acc';
+      const open = this.state.vals[ak] !== undefined ? this.state.vals[ak] : !!c.acc.open;
+      list = [{ t: 'accHead', chip: c.acc.chip, title: c.acc.title, open, onToggle: () => this.setVal(ak, !open) }].concat(open ? list : []);
+    }
+    st.items = list.map((it, i, arr) => this.item(it, cx, i, arr, gap));
+    return st;
+  }
+
+  frame(slot, key, phone) {
+    const S = window.VM.screens, scr = S[key];
+    const ctx = { slot, key, scr };
+    const conts = (scr.blocks || []).slice();
+    const ov = scr.ov;
+    if (ov) {
+      conts.push({ kind: 'scrim', items: [] });
+      const head = ov.band ? { t: 'band', lines: ov.band } : ov.kind === 'sheet' ? { t: 'sheetHead', title: ov.title } : { t: 'dlgHead', title: ov.title, text: ov.text, icon: ov.icon };
+      conts.push({ kind: ov.kind, band: !!ov.band, items: [head].concat(ov.items || [], ov.footer ? [{ t: 'btns', btns: ov.footer }] : []) });
+    }
+    const cs = conts.map((c, i) => this.container(c, Object.assign({}, ctx, { overlay: !!c.kind && c.kind !== 'scrim' }), i));
+    const navItems = scr.nav ? NAVS[scr.nav] : null;
+    const footer = scr.footer ? scr.footer.map((b) => this.btn(b, ctx)) : null;
+    const navH = navItems ? 73 : 0, footH = footer ? 81 : 0;
+    const r = scr.right || {};
+    return {
+      bg: scr.bg || '#FAFAFA', topBg: scr.auth ? '#FFFFFF' : '#FFFFFF',
+      h: phone || ov ? '812px' : 'auto', ovf: phone || ov ? 'hidden' : 'visible', colOv: phone ? 'auto' : 'visible',
+      rad: phone ? '36px' : '0px', shadow: phone ? '0 0 0 10px #191B25, 0 20px 60px rgba(25,27,37,0.25)' : '0 1px 3px rgba(25,27,37,0.08)',
+      colPad: '16px 16px ' + (scr.fab ? 96 : 32) + 'px', title: scr.main || scr.title,
+      hasMain: !!scr.main, hasBar: !scr.main && !!scr.title, hasBack: !!scr.back, onBack: () => this.go(ctx, scr.back),
+      rLink: r.t === 'link', rIconOnly: r.t === 'icon', rChip: r.t === 'chip', rIcon: ic(r.icon), rLabel: r.label, rTone: tone(r.tone), onRight: () => this.go(ctx, r.to, r.toast),
+      cs, hasFooter: !!footer, footer: footer || [], hasFnote: !!scr.fnote, fnote: scr.fnote || '', footBd: scr.fnote ? 'none' : '1px solid #E0E4EA',
+      hasNav: !!navItems, nav: (navItems || []).map(([label, icon, to, toast, av]) => ({ label, icon, hasIcon: !av, hasAv: !!av, av, avBd: label === scr.navActive ? '#4942E4' : 'transparent', color: label === scr.navActive ? '#4942E4' : '#717784', onClick: () => this.go(ctx, to, toast) })),
+      hasTabs: !!scr.tabs, tabs: (scr.tabs || []).map(([label, icon, to, toast]) => { const on = label === scr.tabsActive; return { label, on: on ? '1' : '0', icon: ic(icon), color: on ? '#4942E4' : '#717784', bd: on ? '#4942E4' : 'transparent', onClick: () => this.go(ctx, to, toast) }; }),
+      rBtn: r.t === 'btn',
+      hasFab: !!scr.fab, fabLabel: scr.fab ? scr.fab[0] : '', onFab: () => scr.fab && this.go(ctx, scr.fab[1], scr.fab[2]), fabB: navH + footH + 16 + 'px',
+      hasToast: !!this.state.toasts[slot], toast: this.state.toasts[slot] || '', toastB: navH + footH + 16 + 'px',
+    };
+  }
+
+  renderVals() {
+    const brandInk = { style: { color: '#4942E4' } };
+    const noop = () => {};
+    const VM = window.VM;
+    if (!VM) return { groups: [], showScope: false, pagePad: '80px', pageW: 'max-content', brandInk, noop, scopeRows: [], scopeBoxes: [], total: 0 };
+    const labels = {};
+    VM.groups.forEach((g) => g[2].forEach(([k, l]) => { labels[k] = l; }));
+    const phone = this.props.mode === 'phone';
+    const s = this.state;
+    if (phone) {
+      const start = this.props.screen || 'Trips_Active';
+      const cur = s.frames.phone || start;
+      const f = Object.assign(this.frame('phone', cur, true), { anchor: 'phone', num: '', label: labels[cur] || cur, showLabel: false });
+      return { groups: [{ showHead: false, frames: [f] }], showScope: false, pagePad: '48px 24px', pageW: '100%', brandInk, noop, scopeRows: [], scopeBoxes: [], total: 1 };
+    }
+    let total = 0;
+    VM.groups.forEach((g) => { total += g[2].length; });
+    const only = s.g != null ? s.g : (this.props.group != null && this.props.group !== '' ? Number(this.props.group) : 1);
+    const groupTabs = [{ label: 'Scope', n: 0 }].concat(VM.groups.map((g, i) => ({ label: (i + 1) + ' · ' + g[0], n: i + 1 }))).map((t) => ({ label: t.label, bg: t.n === only ? '#191B25' : '#FFFFFF', color: t.n === only ? '#FFFFFF' : '#191B25', onClick: () => this.setState({ g: t.n }) }));
+    const NUM = {}; VM.groups.forEach((g, gi) => g[2].forEach(([k, lb], si) => { if (!NUM[k]) NUM[k] = { n: (gi + 1) + '.' + (si + 1), t: lb }; }));
+    const KS = { screen: ['Screen', '#FFFFFF', '1px solid #191B25', '8px', '#717784'], sheet: ['Bottom sheet', '#F8F9FF', '1px dashed #4942E4', '8px', '#4942E4'], dialog: ['Dialog', '#FFF1B3', '1px solid #AE890B', '8px', '#AE890B'], done: ['Result', '#CDFFE3', '1px solid #288F5A', '100px', '#288F5A'] };
+    const kindOf = (k) => { const sc = VM.screens[k]; return sc && sc.ov ? (sc.ov.kind === 'dialog' ? 'dialog' : 'sheet') : 'screen'; };
+    const stepOf = (raw, i) => { if (raw[0] === '=') { const K = KS.done; return { notFirst: i > 0, via: '', n: '', kind: K[0], bg: K[1], bd: K[2], rad: K[3], kc: K[4], t: raw.slice(1) }; } const [k, via] = raw.split('|'); const K = KS[kindOf(k)]; const m = NUM[k] || { n: '', t: k }; return { notFirst: i > 0, via: via || '', n: m.n, kind: K[0], bg: K[1], bd: K[2], rad: K[3], kc: K[4], t: m.t }; };
+    const altOf = (str) => { const out = []; str.split(' · ').forEach((chain, ci) => chain.split(' › ').forEach((raw, ri) => { const [k, via] = raw.split('|'); const K = KS[kindOf(k)]; const m = NUM[k] || { n: '', t: k }; out.push({ hasSep: ci > 0 || ri > 0, sep: ri > 0 ? '›' : '·', n: m.n, t: m.t, hasVia: !!via, via: via || '', bg: K[1], bd: K[2] }); })); return out; };
+    const flowLegend = ['screen', 'sheet', 'dialog', 'done'].map((k) => ({ t: KS[k][0], bg: KS[k][1], bd: KS[k][2], rad: k === 'done' ? '100px' : '4px' }));
+    const groups = VM.groups.map(([title, sub, list], gi) => (only !== gi + 1) ? null : ({
+      title: (gi + 1) + ' · ' + title, sub: sub + ' · ' + list.length + ' screens', showHead: true,
+      hasFlows: !!(VM.flows && VM.flows[title]), flows: ((VM.flows && VM.flows[title]) || []).map(([label, steps, alt]) => ({ label, steps: steps.map(stepOf), hasAlt: !!alt, alt: alt ? altOf(alt) : [] })),
+      frames: list.map(([key, label], si) => {
+        const cur = s.frames[key] || key;
+        return Object.assign(this.frame(key, cur, false), { anchor: 's-' + key, num: (gi + 1) + '.' + (si + 1), label, showLabel: true, moved: cur !== key, curLabel: labels[cur] || cur, onReset: () => this.reset(key, key) });
+      }),
+    })).filter(Boolean);
+    const lab = (v) => (v === 1 ? ['Yes', 'green'] : v === 2 ? ['Assumed no', 'red'] : ['View only', 'grey']);
+    const sc = VM.scope;
+    const scopeRows = sc.rows.map(([a, b, x, y]) => ({ a, b, x: lab(x)[0], xt: lab(x)[1], y: lab(y)[0], yt: lab(y)[1] }));
+    const scopeBoxes = [{ title: 'Not in this module', icon: 'Lock', items: sc.desk }, { title: 'Rules on every screen', icon: 'CheckFilledNo', items: sc.rules }, { title: 'To confirm', icon: 'Info', items: sc.confirm }];
+    return { groups, groupTabs, flowLegend, showTabs: true, showScope: only === 0, pagePad: '80px', pageW: 'max-content', brandInk, noop, scopeRows, scopeBoxes, total };
+  }
+}
+</script>
+</body>
+</html>
